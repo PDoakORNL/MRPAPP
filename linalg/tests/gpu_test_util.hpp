@@ -9,13 +9,13 @@
 //
 // This file provides some utilities to test simple Matrix<GPU> operations.
 
-#ifndef MRPAPP_TEST_UNIT_LINALG_GPU_TEST_UTIL_HPP
-#define MRPAPP_TEST_UNIT_LINALG_GPU_TEST_UTIL_HPP
+#ifndef MRPAPP_TEST_GPU_TEST_UTIL_HPP
+#define MRPAPP_TEST_GPU_TEST_UTIL_HPP
 
 #include "mrpapp_gpu.h"
-//#include "dca/linalg/matrix.hpp"
 
 namespace testing {
+
 template <typename ScalarType>
 cudaMemoryType PointerType(const ScalarType* ptr) {
   cudaPointerAttributes attributes;
@@ -24,14 +24,14 @@ cudaMemoryType PointerType(const ScalarType* ptr) {
   if (ret == cudaErrorInvalidValue)
     return cudaMemoryTypeHost;
   checkRC(ret);
-#if defined(MRPAPP_HAVE_CUDA)
+#if defined(DCA_HAVE_CUDA)
   return attributes.type;
-#elif defined(MRPAPP_HAVE_HIP)
-  #if HIP_VERSION_MAJOR >= 6
+#elif defined(DCA_HAVE_HIP)
+#if HIP_VERSION_MAJOR >= 6
   return attributes.type;
-  #else
+#else
   return attributes.memoryType;
-  #endif
+#endif
 #endif
 }
 
@@ -59,17 +59,17 @@ ScalarType getFromDevice(const ScalarType* ptr) {
   return value;
 }
 
-// // The elements of the matrix will be set with mat(i, j) = func(i, j).
-// // In: func
-// // Out: mat
-// template <typename ScalarType, typename F>
-// void setMatrixElements(dca::linalg::Matrix<ScalarType, dca::linalg::GPU>& mat, F& func) {
-//   for (int j = 0; j < mat.nrCols(); ++j)
-//     for (int i = 0; i < mat.nrRows(); ++i) {
-//       ScalarType el(func(i, j));
-//       setOnDevice(mat.ptr(i, j), el);
-//     }
-// }
-}  // testing
+// The elements of the matrix will be set with mat(i, j) = func(i, j).
+// In: func
+// Out: mat
+template <typename ScalarType, typename F>
+void setMatrixElements(dca::linalg::Matrix<ScalarType, dca::linalg::GPU>& mat, F& func) {
+  for (int j = 0; j < mat.nrCols(); ++j)
+    for (int i = 0; i < mat.nrRows(); ++i) {
+      ScalarType el(func(i, j));
+      setOnDevice(mat.ptr(i, j), el);
+    }
+}
+}  // namespace testing
 
-#endif  // MRPAPP_TEST_UNIT_LINALG_GPU_TEST_UTIL_HPP
+#endif

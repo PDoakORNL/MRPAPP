@@ -63,21 +63,7 @@ find_package(BLAS REQUIRED)
 include(ExternalProject)
 find_package(Git REQUIRED)
 
-find_package(Catch2 3)
-if (NOT CATCH2_FOUND)
-ExternalProject_Add(
-  catch2
-  PREFIX ${CMAKE_BINARY_DIR}/catch2
-  GIT_REPOSITORY git@github.com:catchorg/Catch2.git
-  GIT_TAG devel
-  TIMEOUT 30
-  UPDATE_COMMAND ${GIT_EXECUTABLE} pull
-  CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/catch2"
-  LOG_DOWNLOAD ON)
-
-set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/catch2)
-find_package(Catch2 3 REQUIRED)
-endif()
+add_subdirectory(external/Catch2)
 
 set(MRPAPP_SRC
 main.cpp)
@@ -90,13 +76,19 @@ mrpapp_write_definitions_file()
 
 include(mrpapp_linking)
 
+include(CTest)
+include(Catch)
+
 add_subdirectory(platform)
 add_subdirectory(linalg)
 
+add_library(psimaglite INTERFACE)
+target_include_directories(psimaglite INTERFACE PsimagLite PsiMagLite/src)
+
 add_executable(mrpapp ${MRPAPP_SRC})
 target_include_directories(mrpapp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}"
-  ${PROJECT_SOURCE_DIR}/PartialPsimag 
-	${PROJECT_SOURCE_DIR}/PsimagLite 
+  ${PROJECT_SOURCE_DIR}/PartialPsimag
+	${PROJECT_SOURCE_DIR}/PsimagLite
 	${PROJECT_SOURCE_DIR}/PsimagLite/src )
 
 set(HAVE_MPI "$<BOOL:${MPI_FOUND}>")
@@ -108,5 +100,3 @@ target_link_libraries(mrpapp ${MRPAPP_GPU_LIBS} LAPACK::LAPACK BLAS::BLAS ${MPI_
 
 add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<IF:$<OR:$<BOOL:${ENABLE_CUDA}>,$<BOOL:${ENABLE_CUDA}>>,ON,OFF>")
 #$<$<BOOL:${MPI_FOUND}>:USE_MPI>")
-
-include(mrpapp_tests)

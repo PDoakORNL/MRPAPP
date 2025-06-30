@@ -1,5 +1,5 @@
-// Copyright (C) 2018 ETH Zurich
-// Copyright (C) 2018 UT-Battelle, LLC
+// Copyright (C) 2025 ETH Zurich
+// Copyright (C) 2025 UT-Battelle, LLC
 // All rights reserved.
 //
 // See LICENSE for terms of usage.
@@ -11,7 +11,8 @@
 //  of similar total size.
 
 // Always a bad smell
-#pragma once
+#ifndef MRPAPP_LINALG_RESHAPABLE_MATRIX_HPP
+#define MRPAPP_LINALG_RESHAPABLE_MATRIX_HPP
 
 #include <cassert>
 #include <cmath>
@@ -22,18 +23,13 @@
 #include <type_traits>
 #include <utility>
 
-#include "dca/config/haves_defines.hpp"
-#ifdef DCA_HAVE_GPU
-#include "dca/platform/dca_gpu.h"
-#endif
-#include "dca/linalg/util/allocators/allocators.hpp"
-#include "dca/linalg/device_type.hpp"
-#include "dca/linalg/util/copy.hpp"
-#include "dca/linalg/util/stream_functions.hpp"
+#include "platform/mrpapp_gpu.h"
+#include "allocators/allocators.hpp"
+#include "device_type.hpp"
+#include "copy.hpp"
+#include "stream_functions.hpp"
 
-namespace dca {
-namespace linalg {
-// dca::linalg::
+namespace mrpapp {
 
 template <typename ScalarType, DeviceType device_name,
           class Allocator = util::DefaultAllocator<ScalarType, device_name>>
@@ -449,5 +445,4 @@ std::ostream& operator<<(std::ostream& ostr,
   return ostr;
 }
 
-}  // namespace linalg
-}  // namespace dca
+}  // namespace mrpapp

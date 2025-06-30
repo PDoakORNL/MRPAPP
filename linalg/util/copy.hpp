@@ -301,13 +301,12 @@ void memoryCopy(Scalar1* dest, int ld_dest, const Scalar2* src, int ld_src,
 
 // Synchronous 1D memory copy fallback.
 template <typename ScalarType>
-void memoryCopyAsync(ScalarType* dest, const ScalarType* src, size_t size,
-                     const util::GpuStream& /*s*/) {
+void memoryCopyAsync(ScalarType* dest, const ScalarType* src, size_t size, const GpuStream& /*s*/) {
   memoryCopyCpu(dest, src, size);
 }
 template <typename ScalarType>
 void memoryCopyAsync(ScalarType* dest, int ld_dest, const ScalarType* src, int ld_src,
-                     std::pair<int, int> size, const util::GpuStream& /*s*/) {
+                     std::pair<int, int> size, const GpuStream& /*s*/) {
   memoryCopyCpu(dest, ld_dest, src, ld_src, size);
 }
 
