@@ -1,3 +1,9 @@
+# // Copyright (C) 2024 UT-Battelle, LLC
+# // All rights reserved.
+# //
+# // See LICENSE for terms of usage.
+# //
+
 #include "Matrix.h"
 // #include "bands.h"
 #include "Range.h"
